@@ -1,0 +1,60 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+
+# uv
+.python-version
+
+# Environment variables (contains secrets)
+.env
+
+# Data files
+data/
+*.parquet
+*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker volumes
+postgres-data/
+redis-data/
+kafka-data/
+mlflow-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# ML artifacts
+mlruns/
+mlflow/
+
+# Feast
+feature_store/registry.db
+feature_store/data/
