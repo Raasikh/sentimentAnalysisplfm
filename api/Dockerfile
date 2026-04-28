@@ -6,8 +6,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-RUN uv sync --extra api --extra ml --no-dev --frozen
+COPY pyproject.toml uv.lock README.md ./
+RUN uv sync --extra api --extra ml --extra storage --no-dev --frozen
 
 COPY sentiment_platform/ ./sentiment_platform/
 COPY api/ ./api/

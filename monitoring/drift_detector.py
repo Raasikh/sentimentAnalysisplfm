@@ -1,7 +1,7 @@
 import structlog 
 import polars as pl
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
+from evidently import Report
+from evidently.presets import DataDriftPreset
 from prometheus_client import Gauge
 
 logger= structlog.get_logger("drift_detector")

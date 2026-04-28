@@ -48,7 +48,8 @@ class Settings(BaseSettings):
     s3: S3Settings = S3Settings()
     api: APISettings = APISettings()
 
-    model_config = {"env_file": ".env", "extra": "ignore"}
+    model_config = {"env_file": ".env"}
 
 
 settings = Settings()
+

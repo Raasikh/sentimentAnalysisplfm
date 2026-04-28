@@ -1,4 +1,3 @@
-version: "3.8"
 
 services:
   zookeeper:
@@ -7,6 +6,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
     ports:
       - "2181:2181"
     volumes:
@@ -77,18 +77,21 @@ services:
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.9.2
     container_name: mlflow
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
-      - "5000:5000"
+      - "5050:5000"
     volumes:
       - mlflow-data:/mlflow
     command: >
-      mlflow server
-      --host 0.0.0.0
-      --port 5000
-      --backend-store-uri postgresql://mlflow:mlflow_password@postgres:5432/mlflow_db
-      --default-artifact-root /mlflow/artifacts
+      sh -c "pip install psycopg2-binary && mlflow server 
+      --host 0.0.0.0 
+      --port 5000 
+      --backend-store-uri postgresql://mlflow:mlflow_password@postgres:5432/mlflow_db 
+      --default-artifact-root /mlflow/artifacts"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -114,24 +117,15 @@ services:
         condition: service_started
     ports:
       - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
     volumes:
-      - grafana-data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
 
 
-volumes:
-  zookeeper_data:
-  kafka_data:
-  redis_data:
-  postgres-data:
-  mlflow-data:
-  prometheus_data:
-  grafana_data:
+
 
   # ============================================
   # APPLICATION SERVICES
@@ -175,3 +169,12 @@ volumes:
       - "${API_PORT:-8000}:8000"
     env_file: .env
     restart: unless-stopped
+
+volumes:
+  zookeeper_data:
+  kafka_data:
+  redis_data:
+  postgres-data:
+  mlflow-data:
+  prometheus-data:
+  grafana_data:
